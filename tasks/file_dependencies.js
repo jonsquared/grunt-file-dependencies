@@ -10,19 +10,10 @@
 
 module.exports = function(grunt) {
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
-
-  grunt.registerMultiTask('file_dependencies', 'Generates a list of files in dependency order.', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
-    });
-
-    // Iterate over all specified file groups.
+  grunt.registerMultiTask('file_dependencies', 'Generate a list of files in dependency order.', function() {
+    var orderedFiles = [];
+    grunt.log.writeln(JSON.stringify(this.files));
     this.files.forEach(function(f) {
-      // Concat specified files.
       var src = f.src.filter(function(filepath) {
         // Warn on and remove invalid source files (if nonull was set).
         if (!grunt.file.exists(filepath)) {
@@ -31,20 +22,15 @@ module.exports = function(grunt) {
         } else {
           return true;
         }
-      }).map(function(filepath) {
-        // Read file source.
+      });
+      orderedFiles.push.apply(orderedFiles,src);
+/*
+      .map(function(filepath) {
         return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
-
-      // Handle options.
-      src += options.punctuation;
-
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
-
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
+      });
+*/
     });
+    grunt.config(this.name+'.'+this.target+'.'+'ordered_files', orderedFiles);
   });
 
 };

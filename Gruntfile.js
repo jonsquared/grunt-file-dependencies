@@ -23,29 +23,12 @@ module.exports = function(grunt) {
       }
     },
 
+    file_dependencies: {
+    },
+
     // Before generating any new files, remove any previously-created files.
     clean: {
       tests: ['tmp']
-    },
-
-    // Configuration to be run (and then tested).
-    file_dependencies: {
-      default_options: {
-        options: {
-        },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
-      },
-      custom_options: {
-        options: {
-          separator: ': ',
-          punctuation: ' !!!'
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
-      }
     },
 
     // Unit tests.
@@ -57,6 +40,7 @@ module.exports = function(grunt) {
 
   // Actually load this plugin's task(s).
   grunt.loadTasks('tasks');
+  grunt.loadTasks('test/configs');
 
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-jshint');
