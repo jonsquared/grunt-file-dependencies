@@ -2,7 +2,7 @@
 
 var grunt = require('grunt');
 
-exports.single_define = {
+exports.single_define_test = {
   default_options: function(test) {
     test.expect(1);
 
