@@ -1,0 +1,2 @@
+require('ClassA');
+define('ClassB', {});

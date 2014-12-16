@@ -27,8 +27,10 @@ module.exports = function(grunt) {
         nextFiles.push(file);
         delete fileDependencyMap[file];
       }
-      if (nextFiles.length == 0)
+      if (nextFiles.length == 0) {
+        logCyclicDependencyError(fileDependencyMap);
         break;
+      }
       orderedFiles.push.apply(orderedFiles, nextFiles);
     }
     return orderedFiles;
@@ -81,7 +83,12 @@ module.exports = function(grunt) {
     fileInfos.forEach(function(fileInfo) {
       var requires = {};
       fileInfo.requires.forEach(function(require) {
-        requires[defineToFileMap[require]] = true;
+        var file = defineToFileMap[require];
+        if (file)
+          requires[defineToFileMap[require]] = true;
+        else {
+          warn('Definition for "'+require+'" was not found, but is required by "'+fileInfo.path+'".');
+        }
       });
       map[fileInfo.path] = {
         requires: requires
@@ -107,4 +114,14 @@ module.exports = function(grunt) {
     return false;
   }
 
+  function warn(message) {
+    grunt.log.writeln('WARNING'['yellow'].bold+': '+message['yellow']);
+  }
+
+  function logCyclicDependencyError(fileDependencyMap) {
+    var message = 'A cyclic dependency was found among the following files:'+grunt.util.linefeed;
+    for (var file in fileDependencyMap)
+      message += '  '+file+grunt.util.linefeed;
+    grunt.fail.fatal(message);
+  }
 };
