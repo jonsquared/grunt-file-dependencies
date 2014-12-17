@@ -13,10 +13,12 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('file_dependencies', 'Generate a list of files in dependency order.', function() {
     var options = this.options({
         outputProperty: this.name+'.'+this.target+'.'+'ordered_files',
+        outputFile: null
       }),
       orderedFiles = getOrderedFiles(this.files);
-      grunt.log.writeln(options.outputProperty)
     grunt.config(options.outputProperty, orderedFiles);
+    if (options.outputFile)
+      grunt.file.write(options.outputFile,JSON.stringify(orderedFiles));
   });
 
   function getOrderedFiles(files) {

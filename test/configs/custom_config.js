@@ -4,7 +4,8 @@ module.exports = function(grunt) {
       	src: ['test/fixtures/custom_config/*.js']
       },
       options: {
-	      outputProperty: 'customtask.files.src'
+	      outputProperty: 'customtask.files.src',
+	      outputFile: 'tmp/files.json'
       }
     });
 }
