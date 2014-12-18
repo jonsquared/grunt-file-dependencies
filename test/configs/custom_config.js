@@ -1,11 +1,16 @@
 module.exports = function(grunt) {
     grunt.config('file_dependencies.custom_config', {
       files: {
-      	src: ['test/fixtures/custom_config/*.js']
+      	src: [
+    		'test/fixtures/custom_config/Test.js',  
+    		'test/fixtures/custom_config/ClassA.js'
+      	]
       },
       options: {
 	      outputProperty: 'customtask.files.src',
-	      outputFile: 'tmp/files.json'
+	      outputFile: 'tmp/files.json',
+	      extractDefinesRegex: /create\s*\(\s*['"]([^'"]+)['"]/g,
+	      extractRequiresRegex: /use\s*\(\s*['"]([^'"]+)['"]/g,
       }
     });
 }

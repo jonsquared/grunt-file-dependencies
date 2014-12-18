@@ -1,1 +1,1 @@
-define('ClassA', {});
+create('ClassA', {});

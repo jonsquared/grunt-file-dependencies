@@ -25,11 +25,13 @@ module.exports = function(grunt) {
       outputProperty: this.name+'.'+this.target+'.'+'ordered_files',
       outputFile: null,
       extractDefines: function (fileContent) {
-        return extractMatches(fileContent, /define\s*\(\s*['"]([^'"]+)['"]/g);
+        return extractMatches(fileContent, options.extractDefinesRegex);
       },
       extractRequires: function(fileContent, defineMap) {
-        return extractMatches(fileContent, /require\s*\(\s*['"]([^'"]+)['"]/g);
-      }
+        return extractMatches(fileContent, options.extractRequiresRegex);
+      },
+      extractDefinesRegex: /define\s*\(\s*['"]([^'"]+)['"]/g,
+      extractRequiresRegex: /require\s*\(\s*['"]([^'"]+)['"]/g
     });
 
     var orderedFiles = getOrderedFiles(this.files);
