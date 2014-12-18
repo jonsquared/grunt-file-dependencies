@@ -8,6 +8,7 @@ module.exports = function(grunt) {
       },
       options: {
 	      outputProperty: 'customtask.files.src',
+	      outputFile: 'tmp/files.json',
 	      extractDefinesRegex: /create\s*\(\s*['"]([^'"]+)['"]/g,
 	      extractRequiresRegex: /use\s*\(\s*['"]([^'"]+)['"]/g,
       }

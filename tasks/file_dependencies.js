@@ -10,19 +10,37 @@
 
 module.exports = function(grunt) {
 
+  var options;
+
   grunt.registerMultiTask('file_dependencies', 'Generate a list of files in dependency order.', function() {
-    var options = this.options({
-        outputProperty: this.name+'.'+this.target+'.'+'ordered_files',
-      }),
-      orderedFiles = getOrderedFiles(this.files);
-      grunt.log.writeln(options.outputProperty)
+    function extractMatches(fileContent, regex) {
+      var matches = [],
+          match;
+      while(match = regex.exec(fileContent))
+        matches.push(match[1]);
+      return matches;    
+    }
+
+    options = this.options({
+      outputProperty: this.name+'.'+this.target+'.'+'ordered_files',
+      outputFile: null,
+      extractDefines: function (fileContent) {
+        return extractMatches(fileContent, /define\s*\(\s*['"]([^'"]+)['"]/g);
+      },
+      extractRequires: function(fileContent, defineMap) {
+        return extractMatches(fileContent, /require\s*\(\s*['"]([^'"]+)['"]/g);
+      }
+    });
+
+    var orderedFiles = getOrderedFiles(this.files);
     grunt.config(options.outputProperty, orderedFiles);
+    if (options.outputFile)
+      grunt.file.write(options.outputFile,JSON.stringify(orderedFiles));
   });
 
   function getOrderedFiles(files) {
-    var fileInfos = expandFileInfo(getExistingFiles(files)),
-        fileDependencyMap = createFileDependencyMap(fileInfos),
-        orderedFiles = [];
+    var orderedFiles = [],
+        fileDependencyMap = getFileDependencyMapFromFiles(files);
     while(Object.keys(fileDependencyMap).length) {
       var nextFiles = [];
       for (var file in fileDependencyMap) {
@@ -38,6 +56,15 @@ module.exports = function(grunt) {
       orderedFiles.push.apply(orderedFiles, nextFiles);
     }
     return orderedFiles;
+  }
+
+  function getFileDependencyMapFromFiles(files) {
+    var fileInfos = expandFileInfo(getExistingFiles(files)),
+        defineMap;
+    expandFileInfoDefines(fileInfos);
+    defineMap = createDefineToFileMap(fileInfos);
+    expandFileInfoRequires(fileInfos, defineMap);
+    return createFileDependencyMap(fileInfos, defineMap);
   }
 
   function getExistingFiles(files) {
@@ -59,46 +86,15 @@ module.exports = function(grunt) {
       return {
         path: file,
         content: fileContent,
-        defines: extractDefines(fileContent),
-        requires: extractRequires(fileContent)
+        defines: options.extractDefines(fileContent)
       }
     });
   }
 
-  function extractDefines(fileContent) {
-    return extractMatches(fileContent, /define\s*\(\s*['"]([^'"]+)['"]/g);
-  }
-
-  function extractRequires(fileContent) {
-    return extractMatches(fileContent, /require\s*\(\s*['"]([^'"]+)['"]/g);
-  }
-
-  function extractMatches(fileContent, regex) {
-    var matches = [],
-        match;
-    while(match = regex.exec(fileContent))
-      matches.push(match[1]);
-    return matches;    
-  }
-
-  function createFileDependencyMap(fileInfos) {
-    var map = {},
-        defineToFileMap = createDefineToFileMap(fileInfos);
-    fileInfos.forEach(function(fileInfo) {
-      var requires = {};
-      fileInfo.requires.forEach(function(require) {
-        var file = defineToFileMap[require];
-        if (file)
-          requires[defineToFileMap[require]] = true;
-        else {
-          warn('Definition for "'+require+'" was not found, but is required by "'+fileInfo.path+'".');
-        }
-      });
-      map[fileInfo.path] = {
-        requires: requires
-      };
+  function expandFileInfoDefines(fileInfos) {
+    fileInfos.forEach(function (fileInfo) {
+      fileInfo.defines = options.extractDefines(fileInfo.content);
     });
-    return map;
   }
 
   function createDefineToFileMap(fileInfos) {
@@ -107,6 +103,31 @@ module.exports = function(grunt) {
       fileInfo.defines.forEach(function(define) {
         map[define] = fileInfo.path;
       });
+    });
+    return map;
+  }
+
+  function expandFileInfoRequires(fileInfos, defineMap) {
+    fileInfos.forEach(function (fileInfo) {
+      fileInfo.requires = options.extractRequires(fileInfo.content, defineMap);
+    });
+  }
+
+  function createFileDependencyMap(fileInfos, defineMap) {
+    var map = {};
+    fileInfos.forEach(function(fileInfo) {
+      var requires = {};
+      fileInfo.requires.forEach(function(require) {
+        var file = defineMap[require];
+        if (file)
+          requires[defineMap[require]] = true;
+        else {
+          warn('Definition for "'+require+'" was not found, but is required by "'+fileInfo.path+'".');
+        }
+      });
+      map[fileInfo.path] = {
+        requires: requires
+      };
     });
     return map;
   }

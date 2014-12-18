@@ -4,15 +4,18 @@ var grunt = require('grunt');
 
 exports.custom_config_test = {
   custom_options: function(test) {
-    test.expect(1);
+    test.expect(3);
 
-    var actual = grunt.config.get('customtask.files.src');
-    var options = grunt.config.get('file_dependencies').custom_config.options;
-    var expected = [
-    	'test/fixtures/custom_config/ClassA.js',
-    	'test/fixtures/custom_config/Test.js'    	
-    	];
-    test.deepEqual(actual, expected, 'generates file array in specified property');
+    var actualFilesProperty = grunt.config.get('customtask.files.src'),
+        actualFileExists = grunt.file.exists('tmp/files.json'),
+        actualOutputFileContent = actualFileExists && grunt.file.readJSON('tmp/files.json');
+    var expectedFilesProperty = [
+		'test/fixtures/custom_config/ClassA.js',
+		'test/fixtures/custom_config/Test.js'
+	];
+    test.deepEqual(actualFilesProperty, expectedFilesProperty, 'generates file array in specified property');
+    test.ok(actualFileExists, 'output file exists');
+    test.deepEqual(actualOutputFileContent, expectedFilesProperty, 'generates file array in specified output file');
     test.done();
   }
 };
