@@ -2,6 +2,14 @@
 
 > Generates a list of files in dependency order.
 
+You may want to use this plugin if the following applies to your project:
+* You are not using a module script loader (like [RequireJS](http://requirejs.org/)) that provides dependency loading
+  * modules create closure, closure requires extra time/memory overhead for every instance of a class, you need every bit of efficiency you can get
+* The source code is separated into several source files (e.g. classes) that depend on each other and need to be loaded in the correct order
+* You need to keep the files separate during development for easy debugging
+* You want to use a concatenation plugin for the release build (e.g. [grunt-contrib-concat](https://www.npmjs.com/package/grunt-contrib-concat)) but it has no clue about the file dependencies
+
+
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
 
