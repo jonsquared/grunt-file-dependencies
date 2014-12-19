@@ -5,6 +5,7 @@
 You may want to use this plugin if the following applies to your project:
 * You are not using a module script loader (like [RequireJS](http://requirejs.org/)) that provides dependency loading
   * modules create closure, closure requires extra time/memory overhead for every instance of a class, you need every bit of efficiency you can get
+  * you have your reasons
 * The source code is separated into several source files (e.g. classes) that depend on each other and need to be loaded in the correct order
 * You want to use a script tag injection plugin during development for easy debugging (e.g. [grunt-sails-linker](https://www.npmjs.com/package/grunt-sails-linker) but it has no clue about the file dependencies
 * You want to use a concatenation plugin for a release build (e.g. [grunt-contrib-concat](https://www.npmjs.com/package/grunt-contrib-concat)) but it has no clue about the file dependencies
