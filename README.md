@@ -46,17 +46,29 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
+#### options.outputProperty,
 Type: `String`
-Default value: `',  '`
+Default value: `'file_dependencies.current_target.ordered_files'`
 
-A string value that is used to do something with whatever.
+The name of the grunt config property which will be assigned the array of ordered file paths. The default is to set the `ordered_files` property on the current task's configuration.
 
-#### options.punctuation
+#### options.outputFile
 Type: `String`
-Default value: `'.'`
+Default value: `''`
 
-A string value that is used to do something else with whatever else.
+The name of a file that will be created with the array of ordered file paths.
+
+#### options.extractDefinesRegex
+Type: `RegExp`
+Default value: `/define\s*\(\s*['"]([^'"]+)['"]/g`
+
+A regular expression used to search each file for the name of a dependency definition (e.g. class definition).
+
+#### options.extractRequiresRegex
+Type: `RegExp`
+Default value: `/require\s*\(\s*['"]([^'"]+)['"]/g`
+
+A regular expression used to search each file for the name of a dependency requirement (e.g. class requirement).
 
 ### Usage Examples
 
