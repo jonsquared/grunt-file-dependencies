@@ -47,28 +47,42 @@ grunt.initConfig({
 ### Options
 
 #### options.outputProperty,
-Type: `String`
-Default value: `'file_dependencies.current_target.ordered_files'`
+Type: `String`  
+Default value: `'ordered_files'` (on the current target)
 
-The name of the grunt config property which will be assigned the array of ordered file paths. The default is to set the `ordered_files` property on the current task's configuration.
+The name of the grunt config property which will be assigned the array of ordered file paths. The default is to set the `ordered_files` property on the current target's configuration.
 
 #### options.outputFile
-Type: `String`
+Type: `String`  
 Default value: `''`
 
-The name of a file that will be created with the array of ordered file paths.
+The name of a file that will be created with the array of ordered file paths as the content. By default, no file is created.
 
 #### options.extractDefinesRegex
-Type: `RegExp`
+Type: `RegExp`  
 Default value: `/define\s*\(\s*['"]([^'"]+)['"]/g`
 
-A regular expression used to search each file for the name of a dependency definition (e.g. class definition).
+A regular expression used to search each file for dependency definitions (e.g. class definitions).
 
 #### options.extractRequiresRegex
-Type: `RegExp`
+Type: `RegExp`  
 Default value: `/require\s*\(\s*['"]([^'"]+)['"]/g`
 
-A regular expression used to search each file for the name of a dependency requirement (e.g. class requirement).
+A regular expression used to search each file for dependency requirements (e.g. class requires).
+
+#### options.extractDefines
+Type: `Function`  
+Default value: A function that returns the matches found by `extractDefinesRegex`  
+Return type: `Array` of dependency names
+
+A function that will process each file content to find the dependency definitions and return them as an array of their names. Use this if a regex will not work and you need something more custom.
+
+#### options.extractDefines
+Type: `Function`  
+Default value: A function that returns the matches found by `extractRequiresRegex`  
+Return type: `Array` of dependency names that are required
+
+A function that will process each file content to find the dependency requirements and return them as an array of their names. Use this if a regex will not work and you need something more custom.
 
 ### Usage Examples
 
