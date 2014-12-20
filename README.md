@@ -73,14 +73,14 @@ A regular expression used to search each file for dependency requirements (e.g. 
 #### options.extractDefines
 Type: `Function`  
 Default value: A function that returns the matches found by `extractDefinesRegex`  
-Return type: `Array` of dependency names
+Returns: `Array` of dependency names
 
 A function that will process each file content to find the dependency definitions and return them as an array of their names. Use this if a regex will not work and you need something more custom.
 
 #### options.extractDefines
 Type: `Function`  
 Default value: A function that returns the matches found by `extractRequiresRegex`  
-Return type: `Array` of dependency names that are required
+Returns: `Array` of dependency names that are required
 
 A function that will process each file content to find the dependency requirements and return them as an array of their names. Use this if a regex will not work and you need something more custom.
 
