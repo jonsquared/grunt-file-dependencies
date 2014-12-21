@@ -188,7 +188,7 @@ grunt.initConfig({
 ```
 
 ####Using ordered files for development
-To inject your source files into an html file in dependency order, send the output into an injection task (like  [grunt-sails-linker](https://www.npmjs.com/package/grunt-sails-linker)):
+To inject your ordered file paths into an html file as script tags, send the output into an injection task (like  [grunt-sails-linker](https://www.npmjs.com/package/grunt-sails-linker)):
 ```js
 grunt.initConfig({
   file_dependencies: {
