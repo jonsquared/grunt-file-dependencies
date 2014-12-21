@@ -87,7 +87,7 @@ A function that will process each file content to find the dependency requiremen
 ### Usage Examples
 
 #### Default Options
-Given a file `SuperClass.js` that defines a depenency:
+Given a file `SuperClass.js` that defines a dependency:
 ```js
 define('SuperClass', {});
 ```
@@ -96,35 +96,100 @@ and a file that depends on it `SubClass.js`:
 require('SuperClass');
 define('SubClass', {/*...*/});
 ```
-The default options in the example below will find the dependency and set `file_dependencies.your_task.ordered_files` to `['src/SuperClass.js','src/SubClass.js']`.
+The default options in the example below will find the dependency and set `file_dependencies.your_target.ordered_files` to `['src/SuperClass.js','src/SubClass.js']`.
 
 ```js
 grunt.initConfig({
   file_dependencies: {
     options: {},
     your_target: {
-     files: {
-       src: ['src/*.js']
-     }
+      files: {
+        src: ['src/*.js']
+      }
     }
-  },
+  }
 });
 ```
 
 #### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
 
+###Configuring where the output is stored
+The following example will store the ordered file path array in a custom configuration property and save it to a file as well:
+```js
+grunt.initConfig({
+  file_dependencies: {
+    your_target: {
+      options: {
+        outputProperty: 'customtask.files.src',
+        outputFile: 'tmp/files.json',
+      },
+      files: {
+        src: ['src/*.js']
+      }
+    }
+  }
+});
+```
+
+###Configuring how dependencies are found with regular expressions
+Given a file `SuperClass.js` that defines a dependency:
+```js
+framework.customDefine('SuperClass', {});
+```
+and a file that depends on it `SubClass.js`:
+```js
+framework.customRequire('SuperClass');
+framework.customDefine('SubClass', {/*...*/});
+```
+Here is how you can use a regular expression to find the dependencies:
 ```js
 grunt.initConfig({
   file_dependencies: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
+      extractDefinesRegex: /framework\.customDefine\s*\(\s*['"]([^'"]+)['"]/g,
+      extractRequiresRegex: /framework\.customRequire\s*\(\s*['"]([^'"]+)['"]/g
+	   },
+    your_target: {
+      files: {
+        src: ['src/*.js']
+      }
+    }
+  }
+});
+```
+
+###Configuring how dependencies are found with custom functions
+If your source files have complex define or require syntax that requires extra logic that a regular expression will not detect, or you need to filter the requires in a file based in definitions found within the file set, then specify custom extraction functions: 
+```js
+grunt.initConfig({
+  file_dependencies: {
+    options: {
+      extractDefines: function(fileContent) {
+        var regex = /framework\.defineClass\s*\(\s*['"]([^'"]+)['"]/g,
+            matches = [],
+            match;
+        while(match = regex.exec(fileContent))
+          if(customRequireFilter(match[1])
+            matches.push(match[1]);
+        return matches;
+      },
+      extractRequires: function(fileContent, defineMap) {
+        var regex = /framework\.requireClass\s*\(\s*['"]([^'"]+)['"]/g,
+            matches = [],
+            match;
+        while(match = regex.exec(fileContent)) {
+          if (match[1] in defineMap) //ignore any requires referencing a class outside of the file set
+            matches.push(match[1]);
+        }
+        return matches;
+      }
     },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
+    your_target: {
+      files: {
+        src: ['src/*.js']
+      }
+    }
+  }
 });
 ```
 
