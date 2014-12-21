@@ -194,7 +194,7 @@ grunt.initConfig({
 ```
 
 ####Using ordered files for development
-To inject your source files into an html file in dependency order, send the output into an injection task (like  [sails-linker](https://www.npmjs.com/package/grunt-sails-linker)):
+To inject your source files into an html file in dependency order, send the output into an injection task (like  [grunt-sails-linker](https://www.npmjs.com/package/grunt-sails-linker)):
 ```js
 grunt.initConfig({
   file_dependencies: {
@@ -221,6 +221,28 @@ grunt.initConfig({
 });
 ```
 
+####Using ordered files for release
+To concatenate your source files into a single file in dependency order, send the output into a concatenation task (like  [grunt-contrib-concat](https://github.com/gruntjs/grunt-contrib-concat)):
+```js
+grunt.initConfig({
+  file_dependencies: {
+    your_target: {
+      files: {
+        src: ['app/scripts/**/*.js']
+      },
+      options: {
+        outputProperty:'concat.your_target.src' 
+      }
+    }
+  },
+  concat: {
+    your_target: {
+      src: [], //will be set by file_dependencies task
+      dest: 'dist/built.js',
+    },
+  }
+});
+```
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
