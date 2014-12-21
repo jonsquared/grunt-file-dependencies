@@ -113,7 +113,7 @@ grunt.initConfig({
 
 #### Custom Options
 
-###Configuring where the output is stored
+#####Configuring where the output is stored
 The following example will store the ordered file path array in a custom configuration property and save it to a file as well:
 ```js
 grunt.initConfig({
@@ -131,7 +131,7 @@ grunt.initConfig({
 });
 ```
 
-###Configuring how dependencies are found with regular expressions
+#####Configuring how dependencies are found with regular expressions
 Given a file `SuperClass.js` that defines a dependency:
 ```js
 framework.customDefine('SuperClass', {});
@@ -148,7 +148,7 @@ grunt.initConfig({
     options: {
       extractDefinesRegex: /framework\.customDefine\s*\(\s*['"]([^'"]+)['"]/g,
       extractRequiresRegex: /framework\.customRequire\s*\(\s*['"]([^'"]+)['"]/g
-	   },
+    },
     your_target: {
       files: {
         src: ['src/*.js']
@@ -158,7 +158,7 @@ grunt.initConfig({
 });
 ```
 
-###Configuring how dependencies are found with custom functions
+#####Configuring how dependencies are found with custom functions
 If your source files have complex define or require syntax that requires extra logic that a regular expression will not detect, or you need to filter the requires in a file based in definitions found within the file set, then specify custom extraction functions: 
 ```js
 grunt.initConfig({
@@ -192,6 +192,35 @@ grunt.initConfig({
   }
 });
 ```
+
+####Using ordered files for development
+To inject your source files into an html file in dependency order, send the output into an injection task (like  [sails-linker](https://www.npmjs.com/package/grunt-sails-linker)):
+```js
+grunt.initConfig({
+  file_dependencies: {
+    your_target: {
+      files: {
+        src: ['app/scripts/**/*.js']
+      },
+      options: {
+        outputProperty:'sails-linker.your_target.files.src' 
+      }
+    }
+  },
+  'sails-linker': {
+    your_target: {
+      options: {
+        appRoot: 'app/'
+      },
+      files: {
+        src: [], //will be set by file_dependencies task
+        dest: 'app/index.html'
+      }
+    }
+  }
+});
+```
+
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
