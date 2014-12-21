@@ -24,7 +24,6 @@ module.exports = function(grunt) {
 
     options = this.options({
       outputProperty: this.name+'.'+this.target+'.'+'ordered_files',
-      outputFile: '',
       extractDefines: function (fileContent) {
         return extractMatches(fileContent, options.extractDefinesRegex);
       },
@@ -35,11 +34,8 @@ module.exports = function(grunt) {
       extractRequiresRegex: /require\s*\(\s*['"]([^'"]+)['"]/g
     });
 
-    var orderedFiles = getOrderedFiles(this.files);
-    grunt.config(options.outputProperty, orderedFiles);
-    if (options.outputFile) {
-      grunt.file.write(options.outputFile,JSON.stringify(orderedFiles));
-    }
+    var orderedFiles = getOrderedFiles(this.filesSrc);
+    writeOutput(this.files, orderedFiles, options);
   });
 
   function getOrderedFiles(files) {
@@ -73,13 +69,11 @@ module.exports = function(grunt) {
 
   function getExistingFiles(files) {
     var existingFiles = [];
-    files.forEach(function(file) {
-      file.src.forEach(function(filepath) {
-        if (!grunt.file.exists(filepath))
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-        else
-          existingFiles.push(filepath);
-      });
+    files.forEach(function(filepath) {
+      if (!grunt.file.exists(filepath))
+        grunt.log.warn('Source file "' + filepath + '" not found.');
+      else
+        existingFiles.push(filepath);
     });
     return existingFiles;
   }
@@ -152,5 +146,21 @@ module.exports = function(grunt) {
     for (var file in fileDependencyMap)
       message += '  '+file+grunt.util.linefeed;
     grunt.fail.fatal(message);
+  }
+
+  function writeOutput(files, orderedFiles, options) {
+    grunt.config(options.outputProperty, orderedFiles);
+    var dest = getDestinationFile(files);
+    if (dest)
+      grunt.file.write(dest,JSON.stringify(orderedFiles));
+  }
+
+  function getDestinationFile(files) {
+    var dest;
+    files.every(function(file) {
+      dest = file.dest;
+      return dest == 'src';
+    });
+    return dest != 'src' ? dest : '';
   }
 };
