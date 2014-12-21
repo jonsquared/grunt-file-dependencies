@@ -24,7 +24,7 @@ module.exports = function(grunt) {
 
     options = this.options({
       outputProperty: this.name+'.'+this.target+'.'+'ordered_files',
-      outputFile: null,
+      outputFile: '',
       extractDefines: function (fileContent) {
         return extractMatches(fileContent, options.extractDefinesRegex);
       },
