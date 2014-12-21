@@ -188,7 +188,8 @@ grunt.initConfig({
     your_target: {
       src: ['app/scripts/**/*.js'],
       options: {
-        outputProperty:'sails-linker.your_target.src' 
+        //push ordered files into sails-linker task
+        outputProperty:'sails-linker.your_target.src'
       }
     }
   },
@@ -210,15 +211,13 @@ To concatenate your source files into a single file in dependency order, send th
 grunt.initConfig({
   file_dependencies: {
     your_target: {
-      src: ['app/scripts/**/*.js'],
-      options: {
-        outputProperty:'concat.your_target.src' 
-      }
+      src: ['app/scripts/**/*.js']
     }
   },
   concat: {
     your_target: {
-      src: [], //will be set by file_dependencies task
+      //pull the ordered files from file_dependencies task
+      src: ['<%= file_dependencies.your_target.ordered_files %>'],
       dest: 'dist/built.js'
     },
   }
