@@ -52,12 +52,6 @@ Default value: `'ordered_files'` (on the current target)
 
 The name of the grunt config property which will be assigned the array of ordered file paths. The default is to set the `ordered_files` property on the current target's configuration.
 
-#### options.outputFile
-Type: `String`  
-Default value: `''`
-
-The name of a file that will be created with the array of ordered file paths as the content. By default, no file is created.
-
 #### options.extractDefinesRegex
 Type: `RegExp`  
 Default value: `/define\s*\(\s*['"]([^'"]+)['"]/g`
@@ -103,9 +97,7 @@ grunt.initConfig({
   file_dependencies: {
     options: {},
     your_target: {
-      files: {
-        src: ['src/*.js']
-      }
+      src: ['src/*.js']
     }
   }
 });
@@ -120,11 +112,10 @@ grunt.initConfig({
   file_dependencies: {
     your_target: {
       options: {
-        outputProperty: 'customtask.files.src',
-        outputFile: 'tmp/files.json',
+        outputProperty: 'customtask.files.src'
       },
       files: {
-        src: ['src/*.js']
+        'tmp/files.json': ['src/*.js']
       }
     }
   }
@@ -150,9 +141,7 @@ grunt.initConfig({
       extractRequiresRegex: /framework\.customRequire\s*\(\s*['"]([^'"]+)['"]/g
     },
     your_target: {
-      files: {
-        src: ['src/*.js']
-      }
+      src: ['src/*.js']
     }
   }
 });
@@ -185,9 +174,7 @@ grunt.initConfig({
       }
     },
     your_target: {
-      files: {
-        src: ['src/*.js']
-      }
+      src: ['src/*.js']
     }
   }
 });
@@ -199,11 +186,9 @@ To inject your source files into an html file in dependency order, send the outp
 grunt.initConfig({
   file_dependencies: {
     your_target: {
-      files: {
-        src: ['app/scripts/**/*.js']
-      },
+      src: ['app/scripts/**/*.js'],
       options: {
-        outputProperty:'sails-linker.your_target.files.src' 
+        outputProperty:'sails-linker.your_target.src' 
       }
     }
   },
@@ -212,10 +197,8 @@ grunt.initConfig({
       options: {
         appRoot: 'app/'
       },
-      files: {
-        src: [], //will be set by file_dependencies task
-        dest: 'app/index.html'
-      }
+      src: [], //will be set by file_dependencies task
+      dest: 'app/index.html'
     }
   }
 });
@@ -227,9 +210,7 @@ To concatenate your source files into a single file in dependency order, send th
 grunt.initConfig({
   file_dependencies: {
     your_target: {
-      files: {
-        src: ['app/scripts/**/*.js']
-      },
+      src: ['app/scripts/**/*.js'],
       options: {
         outputProperty:'concat.your_target.src' 
       }
@@ -238,7 +219,7 @@ grunt.initConfig({
   concat: {
     your_target: {
       src: [], //will be set by file_dependencies task
-      dest: 'dist/built.js',
+      dest: 'dist/built.js'
     },
   }
 });
