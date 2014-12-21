@@ -3,7 +3,7 @@
 > Generates a list of files in dependency order.
 
 You may want to use this plugin if the following applies to your project:
-* You are not using the AMD patter and are not using a module script loader (like [RequireJS](http://requirejs.org/)) that provides dependency loading
+* You are not using the AMD pattern and are not using a module script loader (like [RequireJS](http://requirejs.org/)) that provides dependency loading
   * modules create closure, closure requires extra time/memory overhead for every instance of a class, you need every bit of efficiency you can get
   * you have your reasons
 * The source code is separated into several source files (e.g. classes) that depend on each other and need to be loaded in the correct order
