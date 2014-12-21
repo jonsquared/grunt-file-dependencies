@@ -67,6 +67,9 @@ A regular expression used to search each file for dependency requirements (e.g. 
 #### options.extractDefines
 Type: `Function`  
 Default value: A function that returns the matches found by `extractDefinesRegex`  
+Parameters:  
+* fileContent `String`: The content of the current file  
+
 Returns: `Array` of dependency names that are defined
 
 A function that will process each file content to find the dependency definitions and return them as an array of their names. Use this if a regex will not work and you need something more custom.
@@ -74,6 +77,10 @@ A function that will process each file content to find the dependency definition
 #### options.extractRequires
 Type: `Function`  
 Default value: A function that returns the matches found by `extractRequiresRegex`  
+Parameters:  
+* fileContent `String`: The content of the current file
+* defineMap: `Object`: A mapping of dependency names to the file path where they are defined
+
 Returns: `Array` of dependency names that are required
 
 A function that will process each file content to find the dependency requirements and return them as an array of their names. Use this if a regex will not work and you need something more custom.
