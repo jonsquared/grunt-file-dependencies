@@ -2,12 +2,13 @@
 
 > Generates a list of files in dependency order.
 
+This plugin will scan your source code for dependencies between files and generate an array of the file paths in dependency order.  You can customize how it finds the dependencies and where it puts the file list.
+
 You may want to use this plugin if the following applies to your project:
-* You are not using the AMD pattern and are not using a module script loader (like [RequireJS](http://requirejs.org/)) that provides dependency loading
-  * modules create closure, closure requires extra time/memory overhead for every instance of a class, you need every bit of efficiency you can get
-  * you have your reasons
-* The source code is separated into several source files (e.g. classes) that depend on each other and need to be loaded in the correct order
-* You want to use a script tag injection plugin during development for easy debugging (e.g. [grunt-sails-linker](https://www.npmjs.com/package/grunt-sails-linker) but it has no clue about the file dependencies
+* The source code is separated into several source files (e.g. classes) that depend on each other and need to be loaded or combined in the correct order
+* You are not using dynamic dependency loaders (like requirejs)  
+\**See the usage examples below for an example of how to detect dependencies without needing to use a require call*
+* You want to use a script tag injection plugin during development to keep your source files separate for easy debugging (e.g. [grunt-sails-linker](https://www.npmjs.com/package/grunt-sails-linker) but it has no clue about the file dependencies
 * You want to use a concatenation plugin for a release build (e.g. [grunt-contrib-concat](https://www.npmjs.com/package/grunt-contrib-concat)) but it has no clue about the file dependencies
 
 
