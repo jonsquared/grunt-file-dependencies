@@ -114,7 +114,7 @@ grunt.initConfig({
 
 #### Custom Options
 
-#####Configuring where the output is stored
+#####Specifying where the output is stored
 The following example will store the ordered file path array in a custom configuration property and save it to a file as well:
 ```js
 grunt.initConfig({
@@ -131,8 +131,7 @@ grunt.initConfig({
 });
 ```
 
-#####Configuring how dependencies are found with regular expressions
-######Detecting requirements using JSDoc style requires
+#####Detecting requirements using JSDoc style requires
 Given a file `app/SuperClass.js` that defines a dependency:
 ```js
 framework.define('app.SuperClass', {});
@@ -159,35 +158,7 @@ grunt.initConfig({
 });
 ```
 
-######Detecting requirements by usage
-*TODO: fill this in*
-
-#####Configuring how dependencies are found with custom functions
-If your source files have complex define or require syntax that requires extra logic that a regular expression will not detect, or you need to filter the requires in a file based in definitions found within the file set, then specify custom extraction functions: 
-```js
-grunt.initConfig({
-  file_dependencies: {
-    options: {
-      extractDefines: function(fileContent) {
-        var defines = [];
-        //do some magic here to find your defines
-        return defines;
-      },
-      extractRequires: function(fileContent, defineMap) {
-        var requires = [];
-        //do some magic here to find the dependency requirements
-        //cross check the requirements against the defineMap (maybe to exclude dependencies outside of your package)
-        return requires;
-      }
-    },
-    your_target: {
-      src: ['src/*.js']
-    }
-  }
-});
-```
-
-####Using ordered files for development
+#####Using ordered files for development
 To inject your ordered file paths into an html file as script tags, send the output into an injection task (like  [grunt-sails-linker](https://www.npmjs.com/package/grunt-sails-linker)):
 ```js
 grunt.initConfig({
@@ -212,7 +183,7 @@ grunt.initConfig({
 });
 ```
 
-####Using ordered files for release
+#####Using ordered files for release
 To concatenate your source files into a single file in dependency order, send the output into a concatenation task (like  [grunt-contrib-concat](https://github.com/gruntjs/grunt-contrib-concat)):
 ```js
 grunt.initConfig({
@@ -227,6 +198,56 @@ grunt.initConfig({
       src: ['<%= file_dependencies.your_target.ordered_files %>'],
       dest: 'dist/built.js'
     },
+  }
+});
+```
+
+#####Detecting requirements by usage
+
+An ideal use of this plugin is to detect dependencies automatically based on references without the need to explicitly list all of the requires.  This is useful when using a simple inheritance framework (like [sooper](https://www.npmjs.com/package/sooper))
+
+Given a file that defines a super class `app/src/SuperClass.js`:
+```js
+sooper.define('app.SuperClass', {
+  value: 0,
+  constructor: function(value) { this.value = value; }
+});
+```
+and a file that defines a class that inherits SuperClass `app/src/TestClass.js`:
+```js
+sooper.define('app.TestClass', {
+    inherits: app.SuperClass,
+    constructor: function(value) {
+        this.super(value);
+        this.value++;
+    }
+});
+```
+and an app that uses TestClass `app/app.js`:
+```js
+var s = new app.SuperClass(42), //class reference using new
+    T = app.TestClass, //cached class reference
+    t1 = new T(1),
+    t2 = new T(2);
+```
+Here is how you can find the dependencies:
+```js
+grunt.initConfig({
+  file_dependencies: {
+    options: {
+      extractDefinesRegex: /sooper\.define\s*\(\s*['"]([^'"]+)['"]/g,
+      extractRequires: function(fileContent, defineMap) {
+        var requires = [];
+        for (var name in defineMap) {
+          if (fileContent.indexOf(name) != -1)
+            requires.push(name);
+        }
+        return requires;
+      }
+    },
+    your_target: {
+      src: ['app/**/*.js']
+    }
   }
 });
 ```
