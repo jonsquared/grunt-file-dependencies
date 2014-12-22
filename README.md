@@ -132,6 +132,7 @@ grunt.initConfig({
 ```
 
 #####Configuring how dependencies are found with regular expressions
+######Detecting requirements using JSDoc style requires
 Given a file `app/SuperClass.js` that defines a dependency:
 ```js
 framework.define('app.SuperClass', {});
@@ -157,6 +158,9 @@ grunt.initConfig({
   }
 });
 ```
+
+######Detecting requirements by usage
+*TODO: fill this in*
 
 #####Configuring how dependencies are found with custom functions
 If your source files have complex define or require syntax that requires extra logic that a regular expression will not detect, or you need to filter the requires in a file based in definitions found within the file set, then specify custom extraction functions: 
