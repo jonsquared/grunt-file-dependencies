@@ -131,25 +131,27 @@ grunt.initConfig({
 ```
 
 #####Configuring how dependencies are found with regular expressions
-Given a file `SuperClass.js` that defines a dependency:
+Given a file `app/SuperClass.js` that defines a dependency:
 ```js
-framework.customDefine('SuperClass', {});
+framework.define('app.SuperClass', {});
 ```
-and a file that depends on it `SubClass.js`:
+and a file that depends on it `app/SubClass.js`:
 ```js
-framework.customRequire('SuperClass');
-framework.customDefine('SubClass', {/*...*/});
+/**
+ * @requires app.SuperClass
+ */
+framework.define('app.SubClass', {/*...*/});
 ```
 Here is how you can use a regular expression to find the dependencies:
 ```js
 grunt.initConfig({
   file_dependencies: {
     options: {
-      extractDefinesRegex: /framework\.customDefine\s*\(\s*['"]([^'"]+)['"]/g,
-      extractRequiresRegex: /framework\.customRequire\s*\(\s*['"]([^'"]+)['"]/g
+      extractDefinesRegex: /framework\.define\s*\(\s*['"]([^'"]+)['"]/g,
+      extractRequiresRegex: /@requires\s*([\w.]*)/g
     },
     your_target: {
-      src: ['src/*.js']
+      src: ['app/*.js']
     }
   }
 });
@@ -162,23 +164,15 @@ grunt.initConfig({
   file_dependencies: {
     options: {
       extractDefines: function(fileContent) {
-        var regex = /framework\.defineClass\s*\(\s*['"]([^'"]+)['"]/g,
-            matches = [],
-            match;
-        while(match = regex.exec(fileContent))
-          if(customRequireFilter(match[1])
-            matches.push(match[1]);
-        return matches;
+        var defines = [];
+        //do some magic here to find your defines
+        return defines;
       },
       extractRequires: function(fileContent, defineMap) {
-        var regex = /framework\.requireClass\s*\(\s*['"]([^'"]+)['"]/g,
-            matches = [],
-            match;
-        while(match = regex.exec(fileContent)) {
-          if (match[1] in defineMap) //ignore any requires referencing a class outside of the file set
-            matches.push(match[1]);
-        }
-        return matches;
+        var requires = [];
+        //do some magic here to find the dependency requirements
+        //cross check the requirements against the defineMap (maybe to exclude dependencies outside of your package)
+        return requires;
       }
     },
     your_target: {
