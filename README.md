@@ -6,8 +6,9 @@ This plugin will scan your source code for dependencies between files and genera
 
 You may want to use this plugin if the following applies to your project:
 * The source code is separated into several source files (e.g. classes) that depend on each other and need to be loaded or combined in the correct order
-* You are not using dynamic dependency loaders (like requirejs)  
-\**See the usage examples below for an example of how to detect dependencies without needing to use a require call*
+* The source code is not using dynamic dependency loaders (like requirejs)
+* The source code doesn't specify requirements in every file  
+\**See the usage examples below for an example of how to detect dependencies without needing to specify requirements*
 * You want to use a script tag injection plugin during development to keep your source files separate for easy debugging (e.g. [grunt-sails-linker](https://www.npmjs.com/package/grunt-sails-linker) but it has no clue about the file dependencies
 * You want to use a concatenation plugin for a release build (e.g. [grunt-contrib-concat](https://www.npmjs.com/package/grunt-contrib-concat)) but it has no clue about the file dependencies
 
