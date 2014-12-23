@@ -36,6 +36,12 @@
     "grunt": "~0.4.5"
   },
   "keywords": [
-    "gruntplugin"
+    "gruntplugin",
+    "file",
+    "class",
+    "dependency",
+    "dependencies",
+    "order",
+    "list"
   ]
 }

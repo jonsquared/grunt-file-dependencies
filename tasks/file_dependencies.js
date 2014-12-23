@@ -16,14 +16,14 @@ module.exports = function(grunt) {
     function extractMatches(fileContent, regex) {
       var matches = [],
           match;
-      while(match = regex.exec(fileContent))
+      while(match = regex.exec(fileContent)) {
         matches.push(match[1]);
+      }
       return matches;    
     }
 
     options = this.options({
       outputProperty: this.name+'.'+this.target+'.'+'ordered_files',
-      outputFile: null,
       extractDefines: function (fileContent) {
         return extractMatches(fileContent, options.extractDefinesRegex);
       },
@@ -34,10 +34,8 @@ module.exports = function(grunt) {
       extractRequiresRegex: /require\s*\(\s*['"]([^'"]+)['"]/g
     });
 
-    var orderedFiles = getOrderedFiles(this.files);
-    grunt.config(options.outputProperty, orderedFiles);
-    if (options.outputFile)
-      grunt.file.write(options.outputFile,JSON.stringify(orderedFiles));
+    var orderedFiles = getOrderedFiles(this.filesSrc);
+    writeOutput(this.files, orderedFiles, options);
   });
 
   function getOrderedFiles(files) {
@@ -51,7 +49,7 @@ module.exports = function(grunt) {
         nextFiles.push(file);
         delete fileDependencyMap[file];
       }
-      if (nextFiles.length == 0) {
+      if (nextFiles.length === 0) {
         logCyclicDependencyError(fileDependencyMap);
         break;
       }
@@ -71,13 +69,11 @@ module.exports = function(grunt) {
 
   function getExistingFiles(files) {
     var existingFiles = [];
-    files.forEach(function(file) {
-      file.src.forEach(function(filepath) {
-        if (!grunt.file.exists(filepath))
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-        else
-          existingFiles.push(filepath);
-      });
+    files.forEach(function(filepath) {
+      if (!grunt.file.exists(filepath))
+        grunt.log.warn('Source file "' + filepath + '" not found.');
+      else
+        existingFiles.push(filepath);
     });
     return existingFiles;
   }
@@ -89,7 +85,7 @@ module.exports = function(grunt) {
         path: file,
         content: fileContent,
         defines: options.extractDefines(fileContent)
-      }
+      };
     });
   }
 
@@ -100,7 +96,7 @@ module.exports = function(grunt) {
   }
 
   function createDefineToFileMap(fileInfos) {
-    var map = {}
+    var map = {};
     fileInfos.forEach(function(fileInfo) {
       fileInfo.defines.forEach(function(define) {
         map[define] = fileInfo.path;
@@ -150,5 +146,21 @@ module.exports = function(grunt) {
     for (var file in fileDependencyMap)
       message += '  '+file+grunt.util.linefeed;
     grunt.fail.fatal(message);
+  }
+
+  function writeOutput(files, orderedFiles, options) {
+    grunt.config(options.outputProperty, orderedFiles);
+    var dest = getDestinationFile(files);
+    if (dest)
+      grunt.file.write(dest,JSON.stringify(orderedFiles));
+  }
+
+  function getDestinationFile(files) {
+    var dest;
+    files.every(function(file) {
+      dest = file.dest;
+      return dest == 'src';
+    });
+    return dest != 'src' ? dest : '';
   }
 };
