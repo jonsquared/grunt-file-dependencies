@@ -15,11 +15,5 @@ exports.single_require_not_found_test = {
     test.equals(warnings.length,1,'one warning occurred');
     test.equals(actualWarning,expectedWarning,'Missing definition warning occurred');
     test.done();
-  }/*,
-
-  custom_options: function(test) {
-    test.expect(1);
-
-    test.done();
-  }*/
+  }
 };

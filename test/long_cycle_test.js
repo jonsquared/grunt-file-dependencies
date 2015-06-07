@@ -23,11 +23,5 @@ exports.long_cycle_test = {
     test.equals(errors.length,1,'one error occurred');
     test.equals(actualError,expectedError,'fatal cyclic dependency error occurred');
     test.done();
-  }/*,
-
-  custom_options: function(test) {
-    test.expect(1);
-
-    test.done();
-  }*/
+  }
 };
