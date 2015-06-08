@@ -1,7 +1,7 @@
 {
   "name": "grunt-file-dependencies",
   "description": "Generates a list of files in dependency order.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "",
   "author": {
     "name": "Jon E. John",
