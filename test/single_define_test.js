@@ -10,11 +10,5 @@ exports.single_define_test = {
     var expected = ['test/fixtures/single_define/Class.js'];
     test.deepEqual(actual, expected, 'generates an array with a single file name');
     test.done();
-  }/*,
-
-  custom_options: function(test) {
-    test.expect(1);
-
-    test.done();
-  }*/
+  }
 };

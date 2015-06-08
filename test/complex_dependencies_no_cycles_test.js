@@ -16,11 +16,5 @@ exports.complex_dependencies_no_cycles_test = {
     ];
     test.deepEqual(actual, expected, 'generates an array with files in correct order');
     test.done();
-  }/*,
-
-  custom_options: function(test) {
-    test.expect(1);
-
-    test.done();
-  }*/
+  }
 };
