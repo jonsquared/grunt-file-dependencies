@@ -1,6 +1,6 @@
 /*
  * grunt-file-dependencies
- * 
+ *
  *
  * Copyright (c) 2014 Jon E. John
  * Licensed under the MIT license.
@@ -19,7 +19,7 @@ module.exports = function(grunt) {
       while(match = regex.exec(fileContent)) {
         matches.push(match[1]);
       }
-      return matches;    
+      return matches;
     }
 
     options = this.options({
@@ -83,8 +83,7 @@ module.exports = function(grunt) {
       var fileContent = grunt.file.read(file);
       return {
         path: file,
-        content: fileContent,
-        defines: options.extractDefines(fileContent)
+        content: fileContent
       };
     });
   }
